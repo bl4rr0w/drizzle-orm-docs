@@ -1,8 +1,17 @@
+---
+// Access environment variable in frontmatter (server-side)
+const INKEEP_API_KEY = import.meta.env.INKEEP_API_KEY;
+---
+
 <div class="nav_search-wrap">
   <div class="search-wrap--centered" id="docsearch"></div>
-  <div id="custom-button" class="nav_ai-btn"></div>
+  <button data-inkeep-sidebar-chat-trigger="" class="nav_ai-btn">
+    Ask AI
+    <img id="drizzle-logo" src="/svg/drizzle.svg" width="16" height="16" alt="Drizzle logo" />
+  </button>
 </div>
-<script type="module" is:inline data-astro-rerun>
+<div id="ikp-sidebar-chat-target"></div>
+<script type="module" is:inline data-astro-rerun define:vars={{ INKEEP_API_KEY }}>
   docsearch({
     container: '#docsearch',
     appId: "MXZNUT59HV",
@@ -18,41 +27,73 @@
       : 'light';
   }
 
-  const properties = {
-    stylesheetUrls: ['/inkeep-styles.css'],
-    chatButtonType: 'ICON_TEXT',
-    isPositionFixed: false,
-    baseSettings: {
-      apiKey: '4f4da4a5733032ef8ff23e3b7906954877fd0ee54d58d1e0',
-      integrationId: 'clpbm8p9y002ns601vbbswj5i',
-      organizationId: 'clog94xy50001s601yapu7swn',
-      organizationDisplayName: 'Drizzle ORM',
-      primaryBrandColor: '#FFFFFF',
-      theme: {
-        colorMode: {
-          forcedColorMode: themeName,
-        },
-      },
-    },
-    style: {visibility: 'visible'},
-    modalSettings: {
-      areOpenHotKeysDisabled: true,
-    },
-    aiChatSettings: {
-      botAvatarSrcUrl: '/svg/drizzle.svg',
+  function updateThemeElements() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const logoImg = document.querySelector('#drizzle-logo');
+    if (logoImg) {
+      logoImg.src = isDark ? '/svg/drizzle.svg' : '/svg/drizzle-dark.svg';
     }
   }
 
-  //@ts-ignore
-  const inkeepWidget = Inkeep().embed({
-    componentType: "ChatButton",
-    targetElement: document.getElementById("custom-button"),
-    properties,
+  function initializeInkeepWidget() {
+    const widget = Inkeep.SidebarChat('#ikp-sidebar-chat-target', config);
+    window.inkeepWidget = widget;
+  }
+
+  updateThemeElements();
+
+  const themeObserver = new MutationObserver(updateThemeElements);
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
   });
 
-  window.inkeepWidget = inkeepWidget;
+  const config = {
+    baseSettings: {
+      apiKey: INKEEP_API_KEY,
+      integrationId: 'clpbm8p9y002ns601vbbswj5i',
+      organizationId: 'clog94xy50001s601yapu7swn',
+      organizationDisplayName: 'Drizzle ORM',
+      primaryBrandColor: '#c5f74f',
+      colorMode: {
+        sync: {
+          target: document.documentElement,
+          attributes: ['class'],
+          isDarkMode: (attrs) => attrs['class']?.includes('dark'),
+        },
+      },
+    },
+    aiChatSettings: {
+      chatSubjectName: 'Drizzle ORM',
+      aiAssistantAvatar: {
+        light: '/svg/drizzle-dark.svg',
+        dark: '/svg/drizzle.svg',
+      }
+    },
+    modalSettings: {
+      defaultView: 'AI_CHAT',
+    },
+    sidebarChatSettings: {
+      position: 'right',
+      defaultWidth: 420,
+      minWidth: 250,
+      maxWidth: 600,
+      defaultOpen: false,
+    },
+  };
+
+  initializeInkeepWidget();
 </script>
 <style>
+  #ikp-sidebar-chat-target {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    pointer-events: auto;
+  }
+
   .nav_search-wrap {
     align-items: center;
     display: flex;
@@ -63,19 +104,45 @@
 
   html[class~=dark] .nav_ai-btn {
     background-color: #1c1c1c;
+    border: 1px solid #333;
+    color: #e1e3e6;
   }
 
   .nav_ai-btn {
     width: 108px;
     height: 33px;
     background-color: #F4F4F4;
+    border: 1px solid #e5e7eb;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .nav_ai-btn:hover {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+  }
+
+  html[class~=dark] .nav_ai-btn:hover {
+    background-color: #2d2d2d;
+    border-color: #404040;
+  }
+
+  .nav_ai-btn svg {
+    width: 16px;
+    height: 16px;
   }
 
   @media screen and (max-width: 768px) {
     .nav_search-wrap {
       display: none;
     }
-    
   }
 </style>

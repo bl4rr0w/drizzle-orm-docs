@@ -33,17 +33,8 @@
       } else {
         themeName = theme;
       }
-      if (window.inkeepWidget) {
-        window.inkeepWidget.render({
-          baseSettings: {
-            theme: {
-              colorMode: {
-                forcedColorMode: themeName,
-              },
-            },
-          },
-        });
-      }
+      // Theme updates are now handled by the SidebarChat implementation
+      // in CenteredSearchWithAI.astro and Header.astro components
     };
 
     const dropdownItems = document.getElementById("theme-dropdown-items");

@@ -140,7 +140,7 @@ import AnnouncementsButton from "./AnnouncementsButton.astro";
     }
 </style>
 <script is:inline>
-  const toggleBurgerMenu = () => {
+  const toggleNavigationBurgerMenu = () => {
     document.getElementById("header").classList.toggle("nav_container_open");
     document.getElementById("aside").classList.toggle("invisible");
     document.body.style.overflow = document.getElementById("header").classList.contains(
@@ -151,9 +151,9 @@ import AnnouncementsButton from "./AnnouncementsButton.astro";
   };
 
   document.addEventListener("astro:page-load", () => {
-    document.querySelector("[data-nav-burger-btn]").removeEventListener("click", toggleBurgerMenu, false)
+    document.querySelector("[data-nav-burger-btn]").removeEventListener("click", toggleNavigationBurgerMenu, false)
     if (document.querySelector("[data-nav-burger-btn]") && document.getElementById("header") && document.getElementById("aside")) {
-      document.querySelector("[data-nav-burger-btn]").addEventListener("click", toggleBurgerMenu)
+      document.querySelector("[data-nav-burger-btn]").addEventListener("click", toggleNavigationBurgerMenu)
     }})
 </script>
 <style>

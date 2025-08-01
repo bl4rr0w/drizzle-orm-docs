@@ -203,7 +203,7 @@ import DocsIcon from "@/assets/icons/DocsIcon.astro";
   }
 </style>
 <script is:inline>
-  const toggleBurgerMenu = () => {
+  const toggleHeaderBurgerMenu = () => {
     document.getElementById("header").classList.toggle("nav_container_open");
     document.getElementById("aside").classList.toggle("invisible");
     document.body.style.overflow = document.getElementById("header").classList.contains(
@@ -214,9 +214,9 @@ import DocsIcon from "@/assets/icons/DocsIcon.astro";
   };
 
   document.addEventListener("astro:page-load", () => {
-    document.querySelector("[data-nav-burger-btn]").removeEventListener("click", toggleBurgerMenu, false)
+    document.querySelector("[data-nav-burger-btn]").removeEventListener("click", toggleHeaderBurgerMenu, false)
     if (document.querySelector("[data-nav-burger-btn]") && document.getElementById("header") && document.getElementById("aside")) {
-      document.querySelector("[data-nav-burger-btn]").addEventListener("click", toggleBurgerMenu)
+      document.querySelector("[data-nav-burger-btn]").addEventListener("click", toggleHeaderBurgerMenu)
   }})
 </script>
 
